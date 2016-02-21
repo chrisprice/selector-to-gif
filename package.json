@@ -1,0 +1,22 @@
+{
+  "name": "selector-to-gif",
+  "version": "1.0.0",
+  "description": "HTTP service to convert URL + selector to animated GIF",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo ':('"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chrisprice/selector-to-gif.git"
+  },
+  "author": "Chris Price <price.c@gmail.com> (http://chrisprice.io)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chrisprice/selector-to-gif/issues"
+  },
+  "homepage": "https://github.com/chrisprice/selector-to-gif#readme",
+  "dependencies": {
+    "phantomjs-prebuilt": "^2.1.4"
+  }
+}
