@@ -1,6 +1,7 @@
 "use strict";
 
 const winston = require('winston');
+const os = require('os');
 const express = require('express');
 const expressValidator = require('express-validator');
 const rimraf = require('rimraf');
@@ -19,8 +20,6 @@ app.use((req, res, next) => {
   next();
 });
 
-const workingDirectory = path.join(__dirname, 'frames');
-
 app.get('/', (req, res) => {
   req.checkQuery(schema);
   const errors = req.validationErrors();
@@ -29,9 +28,9 @@ app.get('/', (req, res) => {
       .send(`Parameter ${errors[0].param} not specified or invalid`);
   }
 
-  const pattern = path.join(__dirname, 'frames', `frame-${uuid()}-*.png`);
+  const pattern = path.join(os.tmpdir(), `frame-${uuid()}-*.png`);
 
-  phantom(req.query, pattern, process.env.TIMEOUT)
+  phantom(req.query, pattern, process.env.TIMEOUT || 10000)
     .then((bBox) => {
       const encoder = new GIFEncoder(bBox.width, bBox.height)
         .createWriteStream({
