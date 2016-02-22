@@ -91,12 +91,17 @@ app.get('/', (req, res) => {
 
       res.writeHead(200, { "Content-Type": "image/gif" });
 
-      pngFileStream(path.join(workingDirectory, `frame-${id}-*.png`))
-        .pipe(encoder)
+      const stream = pngFileStream(path.join(workingDirectory, `frame-${id}-*.png`));
+
+      stream.pipe(encoder)
         .pipe(res);
 
-      rimraf(path.join(workingDirectory, `frame-${id}-*.png`), (err) => {
-        winston.error(err, 'Could not delete files', id);
+      stream.on('end', () => {
+        rimraf(path.join(workingDirectory, `frame-${id}-*.png`), (err) => {
+          if (err) {
+            winston.error(err, 'Could not delete files', id);
+          }
+        });
       });
     }
   );
