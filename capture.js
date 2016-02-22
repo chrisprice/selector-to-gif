@@ -4,12 +4,13 @@ var zpad = require('zpad');
 var args = require('system').args;
 var page = require('webpage').create();
 
-if (args.length !== 2) {
+if (args.length !== 3) {
   console.error('Not enough arguments');
   phantom.exit(1);
 }
 
-var options = JSON.parse(args[1]);
+var pattern = args[1];
+var options = JSON.parse(args[2]);
 
 function getBBox(selector) {
   var elem = document.querySelector(selector);
@@ -19,7 +20,7 @@ function getBBox(selector) {
 function filename(index) {
   var chars = Math.ceil(Math.log(options.count) / Math.LN10);
   var padded = zpad(index, chars);
-  return options.pattern.replace('$i', padded);
+  return pattern.replace('*', padded);
 }
 
 function pageLoaded(status) {

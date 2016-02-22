@@ -25,38 +25,38 @@ app.get('/', (req, res) => {
   req.checkQuery(schema);
   const errors = req.validationErrors();
   if (errors) {
-    res.status(400)
-      .send(`Parameter ${errors[0].param} not specified or invalid`)
-    return;
+    return res.status(400)
+      .send(`Parameter ${errors[0].param} not specified or invalid`);
   }
 
-  const id = uuid();
+  const pattern = path.join(__dirname, 'frames', `frame-${uuid()}-*.png`);
 
-  phantom(Object.assign({}, req.query, {
-      pattern: path.join('frames', `frame-${id}-$i.png`)
-    }), process.env.TIMEOUT)
+  phantom(req.query, pattern, process.env.TIMEOUT)
     .then((bBox) => {
-      var encoder = new GIFEncoder(bBox.width, bBox.height)
+      const encoder = new GIFEncoder(bBox.width, bBox.height)
         .createWriteStream({
           repeat: req.query.repeat,
           delay: req.query.interval,
           quality: 10
         });
 
-      res.writeHead(200, { "Content-Type": "image/gif" });
-
-      const stream = pngFileStream(path.join(workingDirectory, `frame-${id}-*.png`));
-
-      stream.pipe(encoder)
-        .pipe(res);
+      const stream = pngFileStream(pattern)
+        .pipe(encoder);
 
       stream.on('end', () => {
-        rimraf(path.join(workingDirectory, `frame-${id}-*.png`), (err) => {
+        rimraf(pattern, (err) => {
           if (err) {
             winston.error(err, 'Could not delete files', id);
           }
         });
       });
+
+      res.writeHead(200, { "Content-Type": "image/gif" });
+      stream.pipe(res);
+    })
+    .catch((err) => {
+      winston.error(err);
+      res.status(500).send();
     });
 });
 
