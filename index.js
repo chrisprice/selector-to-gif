@@ -34,8 +34,8 @@ app.get('/', (req, res) => {
     url: 'about:blank',
     selector: 'body',
     viewport: '1024,768',
-    frameInterval: '100',
-    frameCount: '50',
+    interval: '100',
+    count: '50',
     repeat: '0',
     quality: '10'
   }, req.query);
@@ -46,15 +46,15 @@ app.get('/', (req, res) => {
     return res.status(500).send();
   }
 
-  options.frameCount = Number(options.frameCount);
-  if (isNaN(options.frameCount) || options.frameCount > MAX_FRAMES) {
+  options.count = Number(options.count);
+  if (isNaN(options.count) || options.count > MAX_FRAMES) {
     winston.warn('Max frames exceeded');
     return res.status(500).send();
   }
 
-  options.frameInterval = Number(options.frameInterval);
-  if (isNaN(options.frameInterval) ||
-      options.frameCount * options.frameInterval > MAX_DURATION) {
+  options.interval = Number(options.interval);
+  if (isNaN(options.interval) ||
+      options.count * options.interval > MAX_DURATION) {
     winston.warn('Max duration exceeded');
     return res.status(500).send();
   }
@@ -85,7 +85,7 @@ app.get('/', (req, res) => {
       var encoder = new GIFEncoder(bBox.width, bBox.height)
         .createWriteStream({
           repeat: options.repeat,
-          delay: options.frameInterval,
+          delay: options.interval,
           quality: options.quality
         });
 

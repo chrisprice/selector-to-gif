@@ -16,6 +16,12 @@ function getBBox(selector) {
   return elem && elem.getBoundingClientRect();
 }
 
+function filename(index) {
+  var chars = Math.ceil(Math.log(options.count) / Math.LN10);
+  var padded = zpad(index, chars);
+  return options.pattern.replace('$i', padded);
+}
+
 function pageLoaded(status) {
   if (status !== 'success') {
     console.error('URL failed to load');
@@ -34,13 +40,12 @@ function pageLoaded(status) {
   page.clipRect = bbox;
   var frame = 0;
   setInterval(function() {
-    if (frame >= options.frameCount) {
+    if (frame >= options.count) {
       return phantom.exit();
     }
-    var filename = options.pattern.replace('$i', zpad(frame, 5));
-    page.render(filename);
+    page.render(filename(frame));
     frame++;
-  }, options.frameInterval);
+  }, options.interval);
 }
 
 page.viewportSize = {
