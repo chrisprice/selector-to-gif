@@ -21,11 +21,11 @@ app.use((req, res, next) => {
 // WARNING - These are way too high for exposing to the internet.
 // WARNING - Additionally there's no throttling of requests.
 // WARNING - Use at your own risk!
-const MAX_VIEWPORT = 1024 * 768;
-const MAX_AREA = 500 * 500;
-const MAX_FRAMES = 50;
-const MAX_DURATION = 5000;
-const MAX_LOADING = 5000;
+const MAX_VIEWPORT = process.env.MAX_VIEWPORT || 1024 * 768;
+const MAX_AREA = process.env.MAX_AREA || 500 * 500;
+const MAX_FRAMES = process.env.MAX_FRAMES || 50;
+const MAX_DURATION = process.env.MAX_DURATION || 5000;
+const MAX_LOADING = process.env.MAX_LOADING || 5000;
 
 const workingDirectory = path.join(__dirname, 'frames');
 
