@@ -18,6 +18,7 @@
   "homepage": "https://github.com/chrisprice/selector-to-gif#readme",
   "dependencies": {
     "express": "^4.13.4",
+    "express-validator": "^2.19.1",
     "gifencoder": "^1.0.6",
     "phantomjs-prebuilt": "^2.1.4",
     "png-file-stream": "^1.0.0",

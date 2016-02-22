@@ -32,7 +32,7 @@ function pageLoaded(status) {
     console.error('Element not found');
     return phantom.exit(1);
   }
-  if (bbox.width * bbox.height > options.maxArea) {
+  if (bbox.width > options.width || bbox.height > options.height) {
     console.error('BBox too large');
     return phantom.exit(1);
   }
@@ -49,7 +49,7 @@ function pageLoaded(status) {
 }
 
 page.viewportSize = {
-  width: options.viewport[0],
-  height : options.viewport[1]
+  width: options.width,
+  height : options.height
 };
 page.open(options.url, pageLoaded);
