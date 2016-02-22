@@ -17,6 +17,13 @@
   },
   "homepage": "https://github.com/chrisprice/selector-to-gif#readme",
   "dependencies": {
-    "phantomjs-prebuilt": "^2.1.4"
+    "express": "^4.13.4",
+    "gifencoder": "^1.0.6",
+    "phantomjs-prebuilt": "^2.1.4",
+    "png-file-stream": "^1.0.0",
+    "rimraf": "^2.5.2",
+    "uuid": "^2.0.1",
+    "winston": "^2.1.1",
+    "zpad": "^0.5.0"
   }
 }
