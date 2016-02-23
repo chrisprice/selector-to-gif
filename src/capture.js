@@ -25,32 +25,41 @@ function filename(index) {
 
 function pageLoaded(status) {
   if (status !== 'success') {
-    console.error('URL failed to load');
+    console.log(JSON.stringify('URL failed to load'));
     return phantom.exit(1);
   }
   var bbox = page.evaluate(getBBox, options.selector);
   if (!bbox) {
-    console.error('Element not found');
+    console.log(JSON.stringify('Element not found'));
     return phantom.exit(1);
   }
   if (bbox.width > options.width || bbox.height > options.height) {
-    console.error('BBox too large');
+    console.log(JSON.stringify('Element larger than viewport'));
     return phantom.exit(1);
   }
   console.log(JSON.stringify(bbox));
   page.clipRect = bbox;
   var frame = 0;
-  setInterval(function() {
+  function captureFrame() {
     if (frame >= options.count) {
       return phantom.exit();
     }
     page.render(filename(frame));
     frame++;
-  }, options.interval);
+  }
+  setTimeout(function() {
+    setInterval(captureFrame, options.interval);
+    captureFrame()
+  }, options.delay);
 }
 
 page.viewportSize = {
   width: options.width,
   height : options.height
 };
+
+page.onError = function() {
+  // Ignore page errors
+};
+
 page.open(options.url, pageLoaded);

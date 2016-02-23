@@ -5,7 +5,7 @@ const execFile = require('child_process').execFile;
 const phantomjs = require('phantomjs-prebuilt/lib/phantomjs');
 
 module.exports = (options, pattern, timeout) => new Promise((resolve, reject) => {
-  execFile(
+  const childProcess = execFile(
     phantomjs.path,
     [
       'capture.js',
@@ -16,11 +16,21 @@ module.exports = (options, pattern, timeout) => new Promise((resolve, reject) =>
       cwd: __dirname,
       timeout: timeout
     },
-    (err, stdout, stderr) => {
+    (err, stdout) => {
       if (err) {
-        reject(stdout + '\n' + stderr);
-      } else {
+        if (childProcess.exitCode === 1) {
+          return reject(JSON.parse(stdout));
+        }
+        if (err.killed) {
+          return reject('Timed out');
+        }
+        return reject(err);
+      }
+      try {
         resolve(JSON.parse(stdout));
+      }
+      catch (e) {
+        reject(e);
       }
     }
   );

@@ -15,12 +15,10 @@ var pngFileStream = require('png-file-stream');
 
 const app = express();
 app.use(expressValidator());
-app.use((req, res, next) => {
-  winston.info(req.method, req.url, req.ip);
-  next();
-});
 
 app.get('/', (req, res) => {
+  const startAt = process.hrtime();
+
   req.checkQuery(schema);
   const errors = req.validationErrors();
   if (errors) {
@@ -30,13 +28,12 @@ app.get('/', (req, res) => {
 
   const pattern = path.join(os.tmpdir(), `frame-${uuid()}-*.png`);
 
-  phantom(req.query, pattern, process.env.TIMEOUT || 10000)
+  phantom(req.query, pattern, process.env.TIMEOUT)
     .then((bBox) => {
       const encoder = new GIFEncoder(bBox.width, bBox.height)
         .createWriteStream({
           repeat: req.query.repeat,
-          delay: req.query.interval,
-          quality: 10
+          delay: req.query.interval
         });
 
       const stream = pngFileStream(pattern)
@@ -54,8 +51,22 @@ app.get('/', (req, res) => {
       stream.pipe(res);
     })
     .catch((err) => {
-      winston.error(err);
-      res.status(500).send();
+      res.error = err;
+      res.status(500)
+        .send(err.toString());
+    })
+    .then(() => {
+      const diff = process.hrtime(startAt)
+      const time = diff[0] * 1e3 + diff[1] * 1e-6
+      winston.info({
+        method: req.method,
+        url: req.url,
+        query: req.query,
+        ip: req.ip,
+        status: res.statusCode,
+        duration: time.toFixed(1),
+        error: res.error
+      });
     });
 });
 

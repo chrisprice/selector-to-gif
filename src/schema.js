@@ -16,8 +16,7 @@ module.exports = {
     notEmpty: true,
     isInt: {
       options: [{
-        min: process.env.MIN_WIDTH || 1,
-        max: process.env.MAX_WIDTH || 1024
+        min: 1
       }]
     }
   },
@@ -25,8 +24,15 @@ module.exports = {
     notEmpty: true,
     isInt: {
       options: [{
-        min: process.env.MIN_HEIGHT || 1,
-        max: process.env.MAX_HEIGHT || 768
+        min: 1
+      }]
+    }
+  },
+  delay: {
+    notEmpty: true,
+    isInt: {
+      options: [{
+        min: 0
       }]
     }
   },
@@ -34,8 +40,7 @@ module.exports = {
     notEmpty: true,
     isInt: {
       options: [{
-        min: process.env.MIN_INTERVAL || 16,
-        max: process.env.MAX_INTERVAL || 1000
+        min: 1
       }]
     }
   },
@@ -43,8 +48,7 @@ module.exports = {
     notEmpty: true,
     isInt: {
       options: [{
-        min: process.env.MIN_COUNT || 1,
-        max: process.env.MAX_COUNT || 50
+        min: 1
       }]
     }
   },
