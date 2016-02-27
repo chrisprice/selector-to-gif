@@ -7,7 +7,7 @@ RUN npm install
 
 COPY . ./
 
-ENV TIMEOUT
+ENV TIMEOUT=60000
 
 EXPOSE 3000
 
