@@ -52,7 +52,7 @@ app.get('/', (req, res) => {
     })
     .catch((err) => {
       res.error = err;
-      res.status(500)
+      res.status(err === 'Timed out' ? 504 : 500)
         .send(err.toString());
     })
     .then(() => {
